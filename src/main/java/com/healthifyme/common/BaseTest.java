@@ -84,10 +84,10 @@ public class BaseTest {
             uninstallApp(testAppPackage);
             installAppFromGooglePlayStore();
 
-            // Q current driver instance - this quits the google playstore
+            // This quits the google play store driver session
             driver.quit();
 
-            // launch HealthiFyMe app installed from playstore
+            // launch HealthifyMe app installed from play store
             driver = new AndroidDriver(url, healthifymeDesiredCapabilities(platformName, platformVersion, deviceName, udid));
 
         } catch (Exception e) {
@@ -101,16 +101,17 @@ public class BaseTest {
     }
 
     /**
-     * To install HealthiFyMe app from
+     * To install HealthifyMe app from play store
      * @throws Exception
      */
     public void installAppFromGooglePlayStore() throws Exception {
-        playStorePage.tapOnSearchAppsAndGames();
-        playStorePage.enterAppSearchText(testAppName);
-        playStorePage.selectFromSearchResult();
-        playStorePage.validateSelectedAppName();
-        playStorePage.tapOnAppInstallButton();
-        playStorePage.validateAppIsInstalled();
+        playStorePage
+                .tapOnSearchAppsAndGames()
+                .enterAppSearchText(testAppName)
+                .selectFromSearchResult()
+                .validateSelectedAppName()
+                .tapOnAppInstallButton()
+                .validateAppIsInstalled();
     }
 
     /**

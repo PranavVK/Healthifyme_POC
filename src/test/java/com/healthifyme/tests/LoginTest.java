@@ -44,12 +44,13 @@ public class LoginTest extends BaseTest {
         String userName = loginUser.getJSONObject("validUser").getString("username");
         String password = loginUser.getJSONObject("validUser").getString("password");
 
-        loginPage.navigateToLoginScreen();
-        loginPage.tapOnLoginWithEmailButton();
-        loginPage.enterUserName(userName);
-        loginPage.enterPassword(password);
+        dashboardPage = loginPage
+                .navigateToLoginScreen()
+                .tapOnLoginWithEmailButton()
+                .enterUserName(userName)
+                .enterPassword(password)
+                .tapOnLoginButton();
 
-        dashboardPage = loginPage.tapOnLoginButton();
         MobileElement hamburgerElement = dashboardPage.getHamburgerMenu();
 
         Assert.assertTrue(hamburgerElement.isDisplayed());
