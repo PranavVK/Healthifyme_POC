@@ -2,12 +2,14 @@ package com.healthifyme.common;
 
 import com.healthifyme.pages.PlayStorePage;
 import io.appium.java_client.AppiumDriver;
+import io.appium.java_client.FindsByAndroidUIAutomator;
 import io.appium.java_client.MobileElement;
 import io.appium.java_client.TouchAction;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.pagefactory.AppiumFieldDecorator;
 import io.appium.java_client.remote.AndroidMobileCapabilityType;
 import io.appium.java_client.remote.MobileCapabilityType;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TimeoutException;
@@ -19,6 +21,7 @@ import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Parameters;
 
+import static io.appium.java_client.touch.WaitOptions.waitOptions;
 import static io.appium.java_client.touch.offset.PointOption.point;
 
 import java.io.BufferedReader;
@@ -26,6 +29,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.time.Duration;
 import java.util.Properties;
 
 public class BaseTest {
@@ -213,5 +217,42 @@ public class BaseTest {
         } catch (StaleElementReferenceException | TimeoutException | NoSuchElementException exception) {
             return false;
         }
+    }
+
+    /**
+     * Method to scroll to another element
+     * @param withText
+     * @return
+     */
+    public MobileElement androidScrollToElement(String withText) {
+        return (MobileElement) ((FindsByAndroidUIAutomator) getDriver()).findElementByAndroidUIAutomator(
+                "new UiScrollable(new UiSelector()" + ".scrollable(true)).scrollIntoView("
+                        + "new UiSelector().description(\"" + withText + "\"));");
+    }
+
+    /**
+     * Method to swipe left/right/bottom/up
+     * @param startX
+     * @param startY
+     * @param endX
+     * @param endY
+     * @throws Exception
+     */
+    public void swipe(int startX, int startY, int endX, int endY) throws Exception {
+        new TouchAction(driver)
+                .press(point(startX, startY))
+                .waitAction((waitOptions(Duration.ofMillis(1000))))
+                .moveTo(point(endX, endY))
+                .release().perform();
+        staticWait(1);
+    }
+
+    /**
+     * Static wait method
+     * @param seconds
+     * @throws InterruptedException
+     */
+    protected void staticWait(int seconds) throws InterruptedException {
+        Thread.sleep(seconds * 1000L);
     }
 }

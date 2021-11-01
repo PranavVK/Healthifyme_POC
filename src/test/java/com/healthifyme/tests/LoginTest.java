@@ -53,6 +53,13 @@ public class LoginTest extends BaseTest {
 
         MobileElement hamburgerElement = dashboardPage.getHamburgerMenu();
 
-        Assert.assertTrue(hamburgerElement.isDisplayed());
+        Assert.assertTrue(hamburgerElement.isDisplayed(), "Dashboard screen is not seen");
+    }
+
+    @Test
+    public void validateFeedBySelectingPreviousWeekDate(){
+        String currentDate = dashboardPage.tapOnFeedDatePickerButton();
+        String dateAfterSelectingPreviousDate = dashboardPage.selectPreviousWeekDate();
+        Assert.assertNotEquals(currentDate, dateAfterSelectingPreviousDate, "Date picker date not updated/selected");
     }
 }
