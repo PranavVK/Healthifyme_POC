@@ -8,6 +8,9 @@ import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.pagefactory.AppiumFieldDecorator;
 import io.appium.java_client.remote.AndroidMobileCapabilityType;
 import io.appium.java_client.remote.MobileCapabilityType;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.StaleElementReferenceException;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -38,7 +41,7 @@ public class BaseTest {
 
     PlayStorePage playStorePage;
 
-    protected Properties props;
+    protected static Properties props;
     InputStream inputStream;
 
     public BaseTest() {
@@ -186,8 +189,28 @@ public class BaseTest {
         e.sendKeys(text);
     }
 
+    /**
+     * To tap on screen with position
+     * @param x
+     * @param y
+     */
     public void tapOnPosition(int x, int y) {
         TouchAction touchAction = new TouchAction(driver);
         touchAction.tap(point(x, y)).perform();
+    }
+
+    /**
+     * To verify the existence of element
+     * @param e
+     * @param seconds
+     * @return
+     */
+    public boolean isExists(MobileElement e, int seconds) {
+        try {
+            waitForVisibility(e, seconds);
+            return true;
+        } catch (StaleElementReferenceException | TimeoutException | NoSuchElementException exception) {
+            return false;
+        }
     }
 }

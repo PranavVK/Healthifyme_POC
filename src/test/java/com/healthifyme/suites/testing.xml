@@ -8,7 +8,7 @@
         <parameter name="udid" value="R52R6013TVA" />
         <parameter name="deviceName" value="Pixel 4" />
         <classes>
-            <class name="com.healthifyme.common.BaseTest"/>
+            <class name="com.healthifyme.tests.LoginTest"/>
         </classes>
     </test>
 </suite>

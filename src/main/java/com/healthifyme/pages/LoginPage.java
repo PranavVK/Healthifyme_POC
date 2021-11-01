@@ -22,15 +22,18 @@ public class LoginPage extends BaseTest {
     @AndroidFindBy(id = ANDROID_HEALTHIFYME_APP_PKG + "btn_login_signup")
     private MobileElement loginButton;
 
+    @AndroidFindBy(id = "com.google.android.gms:id/cancel")
+    private MobileElement alertCancelButton;
+
     public LoginPage navigateToLoginScreen() {
         click(signInOptionButton);
         // To dismiss continue with mobile number alert
-        tapOnPosition(100, 50);
+        click(alertCancelButton);
         return this;
     }
 
     public LoginPage tapOnLoginWithEmailButton() {
-        click(signInOptionButton);
+        click(loginWithEmailButton);
         return this;
     }
 

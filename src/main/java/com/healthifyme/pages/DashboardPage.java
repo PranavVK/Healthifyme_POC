@@ -13,7 +13,14 @@ public class DashboardPage extends BaseTest {
     @AndroidFindBy(id = ANDROID_HEALTHIFYME_APP_PKG + "tv_actionbar_dashboard")
     private MobileElement selectFeedDateButton;
 
+    @AndroidFindBy (uiAutomator = "new UiSelector().resourceId(\"com.android.vending:id/0_resource_name_obfuscated\").text(\"Not now\")")
+    private MobileElement appReviewNotNowButton;
+
     public MobileElement getHamburgerMenu() {
+        // To dismiss play store app review alert popup
+        if (isExists(appReviewNotNowButton, 20)) {
+            click(appReviewNotNowButton);
+        }
         waitForVisibility(hamburgerMenu, 30);
         return hamburgerMenu;
     }
