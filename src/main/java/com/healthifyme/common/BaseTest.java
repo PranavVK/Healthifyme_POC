@@ -1,12 +1,16 @@
 package com.healthifyme.common;
 
-import com.healthifyme.pages.PlayStorePO;
+import com.healthifyme.pages.PlayStorePage;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileElement;
+import io.appium.java_client.TouchAction;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.pagefactory.AppiumFieldDecorator;
 import io.appium.java_client.remote.AndroidMobileCapabilityType;
 import io.appium.java_client.remote.MobileCapabilityType;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.StaleElementReferenceException;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -14,6 +18,8 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Parameters;
+
+import static io.appium.java_client.touch.offset.PointOption.point;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -33,9 +39,9 @@ public class BaseTest {
     final String testAppPackage = "com.healthifyme.basic";
     final String testAppActivity = ".activities.LaunchActivity";
 
-    PlayStorePO playStorePO;
+    PlayStorePage playStorePage;
 
-    protected Properties props;
+    protected static Properties props;
     InputStream inputStream;
 
     public BaseTest() {
@@ -73,7 +79,7 @@ public class BaseTest {
 
             wait = new WebDriverWait(driver, explicitWaitTimeoutInSeconds);
 
-            playStorePO = new PlayStorePO();
+            playStorePage = new PlayStorePage();
 
             uninstallApp(testAppPackage);
             installAppFromGooglePlayStore();
@@ -99,12 +105,12 @@ public class BaseTest {
      * @throws Exception
      */
     public void installAppFromGooglePlayStore() throws Exception {
-        playStorePO.tapOnSearchAppsAndGames();
-        playStorePO.enterAppSearchText(testAppName);
-        playStorePO.selectFromSearchResult();
-        playStorePO.validateSelectedAppName();
-        playStorePO.tapOnAppInstallButton();
-        playStorePO.validateAppIsInstalled();
+        playStorePage.tapOnSearchAppsAndGames();
+        playStorePage.enterAppSearchText(testAppName);
+        playStorePage.selectFromSearchResult();
+        playStorePage.validateSelectedAppName();
+        playStorePage.tapOnAppInstallButton();
+        playStorePage.validateAppIsInstalled();
     }
 
     /**
@@ -181,5 +187,30 @@ public class BaseTest {
     public void sendKeys(MobileElement e, String text) {
         waitForVisibility(e, 10);
         e.sendKeys(text);
+    }
+
+    /**
+     * To tap on screen with position
+     * @param x
+     * @param y
+     */
+    public void tapOnPosition(int x, int y) {
+        TouchAction touchAction = new TouchAction(driver);
+        touchAction.tap(point(x, y)).perform();
+    }
+
+    /**
+     * To verify the existence of element
+     * @param e
+     * @param seconds
+     * @return
+     */
+    public boolean isExists(MobileElement e, int seconds) {
+        try {
+            waitForVisibility(e, seconds);
+            return true;
+        } catch (StaleElementReferenceException | TimeoutException | NoSuchElementException exception) {
+            return false;
+        }
     }
 }
