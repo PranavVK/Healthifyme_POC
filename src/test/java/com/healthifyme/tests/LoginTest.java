@@ -2,6 +2,8 @@ package com.healthifyme.tests;
 
 import com.healthifyme.common.BaseTest;
 import com.healthifyme.pages.DashboardPage;
+import com.healthifyme.pages.FoodLogsPage;
+import com.healthifyme.pages.IFLPage;
 import com.healthifyme.pages.LoginPage;
 import io.appium.java_client.MobileElement;
 import org.testng.Assert;
@@ -10,10 +12,13 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 
 public class LoginTest extends BaseTest {
     LoginPage loginPage;
+    FoodLogsPage foodLogsPage;
     DashboardPage dashboardPage;
+    IFLPage iflPage;
 
     InputStream testData;
     JSONObject loginUser;
@@ -37,6 +42,9 @@ public class LoginTest extends BaseTest {
     @BeforeMethod
     public void beforeMethod() {
         loginPage = new LoginPage();
+        dashboardPage = new DashboardPage();
+        foodLogsPage = new FoodLogsPage();
+        iflPage = new IFLPage();
     }
 
     @Test
@@ -61,5 +69,21 @@ public class LoginTest extends BaseTest {
         String currentDate = dashboardPage.tapOnFeedDatePickerButton();
         String dateAfterSelectingPreviousDate = dashboardPage.selectPreviousWeekDate();
         Assert.assertNotEquals(currentDate, dateAfterSelectingPreviousDate, "Date picker date not updated/selected");
+    }
+
+    @Test
+    public void testFoodLog() {
+        dashboardPage.selectCalEatenOptionFromDashboardView();
+        foodLogsPage.tapOnAddFoodLogForMealType("Breakfast");
+        ArrayList selectedBreakFastFoodTypes = iflPage.addNumberOfFoodTypes(2);
+        iflPage.tapOnAddToMealButton();
+
+        foodLogsPage.tapOnAddFoodLogForMealType("Lunch");
+        ArrayList selectedLunchFoodTypes = iflPage.addNumberOfFoodTypes(2);
+        iflPage.tapOnAddToMealButton();
+
+        foodLogsPage.tapOnAddFoodLogForMealType("Dinner");
+        ArrayList selectedDinnerFoodTypes = iflPage.addNumberOfFoodTypes(2);
+        iflPage.tapOnAddToMealButton();
     }
 }
