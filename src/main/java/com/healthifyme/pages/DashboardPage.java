@@ -20,6 +20,12 @@ public class DashboardPage extends BaseTest {
     @AndroidFindBy(id = ANDROID_HEALTHIFYME_APP_PKG + "tv_date")
     private List<MobileElement> datePickerViews;
 
+    @AndroidFindBy(uiAutomator = "new UiSelector().resourceId(\"com.healthifyme.basic:id/tv_progress\").textContains(\"Cal Eaten\")")
+    private MobileElement calEatenTextView;
+
+    @AndroidFindBy(id = ANDROID_HEALTHIFYME_APP_PKG + "ib_track")
+    private List<MobileElement> plusButtons;
+
     public MobileElement getHamburgerMenu() {
         // To dismiss play store app review alert popup
         if (isExists(appReviewNotNowButton, 20)) {
@@ -52,5 +58,10 @@ public class DashboardPage extends BaseTest {
 
         String dateAfterSelectingPreviousDate = selectFeedDateButton.getText();
         return dateAfterSelectingPreviousDate;
+    }
+
+    public DashboardPage selectCalEatenOptionFromDashboardView() {
+        click(calEatenTextView);
+        return this;
     }
 }

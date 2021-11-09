@@ -9,6 +9,7 @@ import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.pagefactory.AppiumFieldDecorator;
 import io.appium.java_client.remote.AndroidMobileCapabilityType;
 import io.appium.java_client.remote.MobileCapabilityType;
+import io.appium.java_client.service.local.AppiumDriverLocalService;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.StaleElementReferenceException;
@@ -18,6 +19,7 @@ import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Parameters;
 
@@ -28,6 +30,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.ServerSocket;
 import java.net.URL;
 import java.time.Duration;
 import java.util.Properties;
@@ -42,6 +45,7 @@ public class BaseTest {
     final String testAppName = "healthifyme app";
     final String testAppPackage = "com.healthifyme.basic";
     final String testAppActivity = ".activities.LaunchActivity";
+    private static AppiumDriverLocalService server;
 
     PlayStorePage playStorePage;
 
@@ -55,6 +59,33 @@ public class BaseTest {
     public AppiumDriver getDriver() {
         return driver;
     }
+
+    @BeforeSuite
+    public void test() throws Exception {
+        server = AppiumDriverLocalService.buildDefaultService();
+        if(!checkIfAppiumServerIsRunnning(4723)) {
+            server.start();
+            server.clearOutPutStreams(); // -> Comment this if you don't want to see server logs in the console
+        } else {
+            System.out.println("");
+        }
+    }
+
+    public boolean checkIfAppiumServerIsRunnning(int port) throws Exception {
+        boolean isAppiumServerRunning = false;
+        ServerSocket socket;
+        try {
+            socket = new ServerSocket(port);
+            socket.close();
+        } catch (IOException e) {
+            System.out.println("1");
+            isAppiumServerRunning = true;
+        } finally {
+            socket = null;
+        }
+        return isAppiumServerRunning;
+    }
+
 
     @Parameters({"platformName", "platformVersion", "deviceName", "udid"})
     @BeforeTest
@@ -79,7 +110,6 @@ public class BaseTest {
             URL url = new URL(props.getProperty("appiumURL"));
             driver = new AndroidDriver(url, capabilities);
 
-            PageFactory.initElements(new AppiumFieldDecorator(driver), this);
 
             wait = new WebDriverWait(driver, explicitWaitTimeoutInSeconds);
 
@@ -137,6 +167,7 @@ public class BaseTest {
         capabilities.setCapability(AndroidMobileCapabilityType.APP_WAIT_ACTIVITY, testAppActivity);
         capabilities.setCapability(AndroidMobileCapabilityType.DEVICE_READY_TIMEOUT, 40);
         capabilities.setCapability(MobileCapabilityType.NEW_COMMAND_TIMEOUT, 180);
+        capabilities.setCapability(MobileCapabilityType.NO_RESET, true);
         return  capabilities;
     }
 
